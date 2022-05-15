@@ -5,8 +5,8 @@ tests:
       rb: r.format("With great {noun} comes great responsibility.", {"noun" => "power"})
       ot: "With great power comes great responsibility."
     # Formatting at the beginning and end of the text
-    - cd: r.format("{with} great power comes great {what}", {"with": "With", "what": "responsibility"})
-      rb: r.format("{with} great power comes great {what}", {"with" => "With", "what" => "responsibility"})
+    - cd: r.format("{with} great power comes great {what}.", {"with": "With", "what": "responsibility"})
+      rb: r.format("{with} great power comes great {what}.", {"with" => "With", "what" => "responsibility"})
       ot: "With great power comes great responsibility."
     # Formatting with empty placeholder
     - cd: r.format("With great {} comes great responsibility.", {"": "power"})
@@ -24,14 +24,10 @@ tests:
     - cd: r.format("{bottles} bottles of beer on the wall.", {"bottles": 99.12345})
       rb: r.format("{bottles} bottles of beer on the wall.", {"bottles" => 99.12345})
       ot: "99.12345 bottles of beer on the wall."
-    # Using mixed values for formatting
-    - cd: r.format("x is not in {list}", {"list": ["one", 2, 3.45678, {"nine": 9}]})
-      rb: r.format("x is not in {list}", {"list" => ["one", 2, 3.45678, {"nine" => 9}]})
-      ot: "x is not in ["one",2,3.45678,{"nine":9}]"
     # Placeholder not found in replacement parameters
     - cd: r.format("foo {bar} baz", {})
       rb: r.format("foo {bar} baz", {})
-      ot: err('ReqlNonExistenceError', 'No attribute `bar` in object'))
+      ot: err('ReqlNonExistenceError', 'No attribute `bar` in object:')
     # Placeholder indicator curly braces is not closed
     - cd: r.format("foo {bar baz", {"bar": "bar" })
       rb: r.format("foo {bar baz", {"bar" => "bar" })
@@ -44,8 +40,8 @@ tests:
       rb: r.format("foo {{nested}} baz", {"nested" => "bar" })
       ot: err('ReqlQueryLogicError', 'Nested template parameters are not allowed')
     - cd: r.format("{foo} {bar} {baz}", ["foo", "bar", "baz"])
-      ot: err('ReqlQueryLogicError', 'Expected type OBJECT but found ARRAY')
+      ot: err('ReqlQueryLogicError', 'Expected type OBJECT but found ARRAY.')
     - cd: r.format("{foo} bar baz", "foo")
-      ot: err('ReqlQueryLogicError', 'Expected type OBJECT but found STRING')
+      ot: err('ReqlQueryLogicError', 'Expected type OBJECT but found STRING.')
     - cd: r.format("{foo} bar baz", 1)
-      ot: err('ReqlQueryLogicError', 'Expected type OBJECT but found NUMBER')
+      ot: err('ReqlQueryLogicError', 'Expected type OBJECT but found NUMBER.')
