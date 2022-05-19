@@ -130,7 +130,7 @@ private:
 class format_term_t : public op_term_t {
 public:
     format_term_t(compile_env_t *env, const raw_term_t &term)
-            : op_term_t{env, term, argspec_t{2}}, src_term{term}, compile_env{env} {}
+            : op_term_t{env, term, argspec_t{2}}, compile_env{env} {}
 private:
     virtual scoped_ptr_t <val_t> eval_impl(scope_env_t *env, args_t *args, eval_flags_t) const {
         const std::string templ = args->arg(env, 0)->as_str().to_std();
@@ -163,13 +163,15 @@ private:
                        base_exc_t::LOGIC,
                        "Parameter tag must be closed");
 
-                minidriver_t r{src_term.bt()};
+                minidriver_t r{backtrace()};
                 datum_t field{datum.get_field(datum_string_t{param_name})};
                 counted_t<const term_t> term = compile_term(
                         compile_env,
                         r.expr(field).coerce_to("STRING").root_term());
 
-                formatted += term->eval(env)->as_datum().as_str().to_std();
+                std::string result{term->eval(env)->as_datum().as_str().to_std()};
+
+                formatted.append(result.data(), result.size());
                 pos += param_end_pos;
             } else {
                 formatted += templ[pos];
@@ -181,7 +183,6 @@ private:
 
     virtual const char *name() const { return "format"; }
 
-    raw_term_t src_term;
     compile_env_t *compile_env;
 };
 
