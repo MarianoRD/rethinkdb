@@ -163,14 +163,14 @@ private:
                        base_exc_t::LOGIC,
                        "Parameter tag must be closed");
 
-                const datum_t &field{datum.get_field(datum_string_t{param_name})};
+                const datum_t field{datum.get_field(datum_string_t{param_name})};
 
                 minidriver_t r{backtrace()};
                 counted_t<const term_t> term = compile_term(
                         compile_env,
                         r.expr(field).coerce_to("STRING").root_term());
 
-                const datum_string_t &result{term->eval(env)->as_str()};
+                const datum_string_t result{term->eval(env)->as_str()};
 
                 formatted.append(result.data(), result.size());
                 pos += param_end_pos;
