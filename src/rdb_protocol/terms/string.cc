@@ -155,6 +155,11 @@ private:
                            base_exc_t::LOGIC,
                            "Nested template parameters are not allowed");
 
+                    // Reserve "," for later use to implement formatting
+                    rcheck(next_char != ':' && next_char != '\\',
+                           base_exc_t::LOGIC,
+                           strprintf("Formatting separator \"%c\" is not allowed in parameter name", next_char));
+
                     param_name.push_back(next_char);
                     ++param_end_pos;
                 }
